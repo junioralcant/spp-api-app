@@ -9,6 +9,11 @@ const abastecimento = require('./Abastecimento');
 const adiantamento = require('./Adiantamento');
 const alimentacao = require('./Alimentacao');
 
+const hospedagem = require('./Hospedagem');
+const despesaExtra = require('./DespesaExtra');
+const peca = require('./peca');
+const roco = require('./roco');
+
 const multerConfig = require('../config/multer');
 
 const routes = express.Router();
@@ -22,7 +27,15 @@ routes.post(
   ImageController.store
 );
 
-routes.use(abastecimento, alimentacao, adiantamento);
+routes.use(
+  abastecimento,
+  alimentacao,
+  adiantamento,
+  hospedagem,
+  despesaExtra,
+  peca,
+  roco
+);
 
 routes.get('/', (req, res) => {
   return res.json({ message: 'ok' });
