@@ -1,21 +1,21 @@
-const Admin = require('../models/User');
+const User = require('../models/User');
 
 class SessionController {
   async store(req, resp) {
     const { email, password } = req.body;
 
-    const admin = await Admin.findOne({ email });
-    if (!admin) {
+    const user = await User.findOne({ email });
+    if (!user) {
       return resp
         .status(400)
         .json({ error: 'Usuario não encontrado' });
     }
 
-    if (!(await admin.compareHash(password))) {
+    if (!(await user.compareHash(password))) {
       return resp.status(400).json({ error: 'Password inválida' });
     }
 
-    return resp.json({ admin, token: Admin.generateToken(admin) });
+    return resp.json({ user, token: User.generateToken(user) });
   }
 }
 
