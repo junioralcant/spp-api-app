@@ -25,8 +25,14 @@ class PecaController {
 
       filters.createdAt.$gte = inicio;
       filters.createdAt.$lte = fim;
-      filters.nomeLinha = new RegExp(nomeLinha, 'i');
-      filters.veiculo = new RegExp(veiculo, 'i');
+
+      if (nomeLinha) {
+        filters.nomeLinha = new RegExp(nomeLinha, 'i');
+      }
+
+      if (veiculo) {
+        filters.veiculo = new RegExp(veiculo, 'i');
+      }
 
       let pecaFilter = await Peca.paginate(filters, {
         page: req.query.page || 1,

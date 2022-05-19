@@ -6,6 +6,8 @@ class AdiantamentoController {
   async index(req, res) {
     const { nomeLinha, dataIncio, dataFim, colaborador } = req.query;
 
+    console.log(dataFim, dataIncio);
+
     const filters = {};
 
     let adiantamento = await Adiantamento.find().populate({
@@ -23,10 +25,18 @@ class AdiantamentoController {
 
       const fim = moment(dataFim).format('YYYY-MM-DDT23:59:ss.SSSZ');
 
+      console.log(inicio, fim);
+
       filters.createdAt.$gte = inicio;
       filters.createdAt.$lte = fim;
-      filters.nomeLinha = new RegExp(nomeLinha, 'i');
-      filters.nomeColaborador = new RegExp(colaborador, 'i');
+
+      if (nomeLinha) {
+        filters.nomeLinha = new RegExp(nomeLinha, 'i');
+      }
+
+      if (colaborador) {
+        filters.nomeColaborador = new RegExp(colaborador, 'i');
+      }
 
       let adiantamentoFilter = await Adiantamento.paginate(filters, {
         page: req.query.page || 1,
@@ -44,6 +54,13 @@ class AdiantamentoController {
     } else if (nomeLinha) {
       adiantamento = await Adiantamento.find({
         nomeLinha: new RegExp(nomeLinha, 'i'),
+      }).populate({
+        path: 'imagem',
+        select: ['_id', 'url'],
+      });
+    } else if (colaborador) {
+      adiantamento = await Adiantamento.find({
+        nomeColaborador: new RegExp(colaborador, 'i'),
       }).populate({
         path: 'imagem',
         select: ['_id', 'url'],
@@ -79,14 +96,14 @@ class AdiantamentoController {
       url,
     });
 
-    const { nomeLinha, nomeColaborador, descricao, valor } = req.body;
+    const { nomeLinha, nomeColaborador, descricao, total } = req.body;
 
     const adiantamento = await Adiantamento.create({
       nomeLinha,
       nomeColaborador,
       descricao,
       imagem: image._id,
-      valor,
+      total,
     });
 
     return res.json(adiantamento);

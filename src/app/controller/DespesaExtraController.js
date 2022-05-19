@@ -25,8 +25,14 @@ class DespesaExtraController {
 
       filters.createdAt.$gte = inicio;
       filters.createdAt.$lte = fim;
-      filters.nomeLinha = new RegExp(nomeLinha, 'i');
-      filters.item = new RegExp(item, 'i');
+
+      if (nomeLinha) {
+        filters.nomeLinha = new RegExp(nomeLinha, 'i');
+      }
+
+      if (item) {
+        filters.item = new RegExp(item, 'i');
+      }
 
       let despesaExtraFilter = await DespesaExtra.paginate(filters, {
         page: req.query.page || 1,

@@ -30,8 +30,10 @@ class RocoController {
 
       filters.createdAt.$gte = inicio;
       filters.createdAt.$lte = fim;
-      filters.nomeLinha = new RegExp(nomeLinha, 'i');
-      filters.nomeHotel = new RegExp(nomeHotel, 'i');
+
+      if (nomeLinha) {
+        filters.nomeLinha = new RegExp(nomeLinha, 'i');
+      }
 
       let rocoFilter = await Roco.paginate(filters, {
         page: req.query.page || 1,

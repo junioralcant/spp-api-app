@@ -25,8 +25,14 @@ class HospedagemController {
 
       filters.createdAt.$gte = inicio;
       filters.createdAt.$lte = fim;
-      filters.nomeLinha = new RegExp(nomeLinha, 'i');
-      filters.nomeHotel = new RegExp(nomeHotel, 'i');
+
+      if (nomeLinha) {
+        filters.nomeLinha = new RegExp(nomeLinha, 'i');
+      }
+
+      if (nomeHotel) {
+        filters.nomeHotel = new RegExp(nomeHotel, 'i');
+      }
 
       let hospedagemFilter = await Hospedagem.paginate(filters, {
         page: req.query.page || 1,

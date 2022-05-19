@@ -15,7 +15,7 @@ const AdiantamentoSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Image',
   },
-  valor: {
+  total: {
     type: Number,
   },
   createdAt: {
