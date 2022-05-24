@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate');
 
 const PecaSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    default: 'Peças',
+  },
   nomeLinha: {
     type: String,
   },
@@ -19,7 +23,7 @@ const PecaSchema = new mongoose.Schema({
     ref: 'Image',
   },
   quantidade: {
-    type: Number,
+    type: String,
   },
   valorUnitario: {
     type: Number,

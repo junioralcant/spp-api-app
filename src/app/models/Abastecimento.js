@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate');
 
 const AbastecimetoSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    default: 'Abastecimento',
+  },
   nomeLinha: {
     type: String,
   },
@@ -9,7 +13,7 @@ const AbastecimetoSchema = new mongoose.Schema({
     type: String,
   },
   litros: {
-    type: Number,
+    type: String,
   },
   descricao: {
     type: String,

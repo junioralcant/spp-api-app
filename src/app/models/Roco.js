@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate');
 
 const RocoSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    default: 'Roço',
+  },
   nomeLinha: {
     type: String,
   },

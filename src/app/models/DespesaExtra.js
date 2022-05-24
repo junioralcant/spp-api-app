@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate');
 
 const DespesaExtraSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    default: 'Despesa Extra',
+  },
   nomeLinha: {
     type: String,
   },
@@ -16,7 +20,7 @@ const DespesaExtraSchema = new mongoose.Schema({
     ref: 'Image',
   },
   quantidade: {
-    type: Number,
+    type: String,
   },
   total: {
     type: Number,

@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate');
 
 const HospedagemSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    default: 'Hospedagem',
+  },
   nomeLinha: {
     type: String,
   },
@@ -9,7 +13,7 @@ const HospedagemSchema = new mongoose.Schema({
     type: String,
   },
   diarias: {
-    type: Number,
+    type: String,
   },
   descricao: {
     type: String,

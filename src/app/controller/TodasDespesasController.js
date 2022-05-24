@@ -44,24 +44,13 @@ class TodasDespesasController {
       select: ['_id', 'url'],
     });
 
-    let roco = await Roco.find()
-      .populate({
-        path: 'fotoAntes',
-        select: ['_id', 'url'],
-      })
-      .populate({
-        path: 'fotoDepois',
-        select: ['_id', 'url'],
-      });
-
     despesas = despesas.concat(
       abastecimento,
       adiantamento,
       alimentacao,
       despesaExtra,
       hospedagem,
-      peca,
-      roco
+      peca
     );
 
     console.log(despesas.length);

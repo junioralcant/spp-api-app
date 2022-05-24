@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate');
 
 const AlimentacaoSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    default: 'Alimentação',
+  },
   nomeLinha: {
     type: String,
   },
