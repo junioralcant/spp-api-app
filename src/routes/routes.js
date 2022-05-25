@@ -14,6 +14,7 @@ const despesaExtra = require('./DespesaExtra');
 const peca = require('./peca');
 const roco = require('./roco');
 const todasdespesas = require('./TodasDespesas');
+const saldo = require('./Saldo');
 
 const multerConfig = require('../config/multer');
 
@@ -36,7 +37,8 @@ routes.use(
   despesaExtra,
   peca,
   roco,
-  todasdespesas
+  todasdespesas,
+  saldo
 );
 
 routes.get('/', (req, res) => {
