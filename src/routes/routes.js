@@ -18,10 +18,14 @@ const saldo = require('./Saldo');
 
 const multerConfig = require('../config/multer');
 
+const middleware = require('../app/middleware/auth');
+
 const routes = express.Router();
 
 routes.post('/users', UserController.store);
 routes.post('/sessions', SessionContrller.store);
+
+routes.use(middleware);
 
 routes.post(
   '/imagens',
