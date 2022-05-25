@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate');
 
 const AdiantamentoSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    default: 'Adiantamento',
+  },
   nomeLinha: {
     type: String,
   },
