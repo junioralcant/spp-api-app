@@ -8,10 +8,12 @@ class DespesaExtraController {
 
     const filters = {};
 
-    let despesaExtra = await DespesaExtra.find().populate({
-      path: 'imagem',
-      select: ['_id', 'url'],
-    });
+    let despesaExtra = await DespesaExtra.find()
+      .sort('-createdAt')
+      .populate({
+        path: 'imagem',
+        select: ['_id', 'url'],
+      });
 
     //Filtro de data e nome linha
     if (dataIncio && dataFim) {

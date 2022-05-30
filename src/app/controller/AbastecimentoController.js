@@ -8,10 +8,12 @@ class AbastecimentoController {
 
     const filters = {};
 
-    let abastecimento = await Abastecimento.find().populate({
-      path: 'imagem',
-      select: ['_id', 'url'],
-    });
+    let abastecimento = await Abastecimento.find()
+      .sort('-createdAt')
+      .populate({
+        path: 'imagem',
+        select: ['_id', 'url'],
+      });
 
     //Filtro de data e nome linha
     if (dataIncio && dataFim) {

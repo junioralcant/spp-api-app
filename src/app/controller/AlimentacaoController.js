@@ -8,10 +8,12 @@ class AlimentacaoController {
 
     const filters = {};
 
-    let alimentacao = await Alimentacao.find().populate({
-      path: 'imagem',
-      select: ['_id', 'url'],
-    });
+    let alimentacao = await Alimentacao.find()
+      .sort('-createdAt')
+      .populate({
+        path: 'imagem',
+        select: ['_id', 'url'],
+      });
 
     //Filtro de data e nome linha
     if (dataIncio && dataFim) {

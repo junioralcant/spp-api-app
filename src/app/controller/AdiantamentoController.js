@@ -10,10 +10,12 @@ class AdiantamentoController {
 
     const filters = {};
 
-    let adiantamento = await Adiantamento.find().populate({
-      path: 'imagem',
-      select: ['_id', 'url'],
-    });
+    let adiantamento = await Adiantamento.find()
+      .sort('-createdAt')
+      .populate({
+        path: 'imagem',
+        select: ['_id', 'url'],
+      });
 
     //Filtro de data e nome linha
     if (dataIncio && dataFim) {

@@ -9,6 +9,7 @@ class RocoController {
     const filters = {};
 
     let roco = await Roco.find()
+      .sort('-createdAt')
       .populate({
         path: 'fotoAntes',
         select: ['_id', 'url'],

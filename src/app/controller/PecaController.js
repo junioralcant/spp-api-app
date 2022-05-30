@@ -8,10 +8,12 @@ class PecaController {
 
     const filters = {};
 
-    let peca = await Peca.find().populate({
-      path: 'imagem',
-      select: ['_id', 'url'],
-    });
+    let peca = await Peca.find()
+      .sort('-createdAt')
+      .populate({
+        path: 'imagem',
+        select: ['_id', 'url'],
+      });
 
     //Filtro de data e nome linha
     if (dataIncio && dataFim) {

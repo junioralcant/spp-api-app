@@ -8,10 +8,12 @@ class HospedagemController {
 
     const filters = {};
 
-    let hospedagem = await Hospedagem.find().populate({
-      path: 'imagem',
-      select: ['_id', 'url'],
-    });
+    let hospedagem = await Hospedagem.find()
+      .sort('-createdAt')
+      .populate({
+        path: 'imagem',
+        select: ['_id', 'url'],
+      });
 
     //Filtro de data e nome linha
     if (dataIncio && dataFim) {
