@@ -47,7 +47,7 @@ UserSchema.statics = {
   //craia um token para o usuário
   generateToken({ id }) {
     return jwt.sign({ id }, 'sppapplication', {
-      expiresIn: 86400, // um período para que esse token inspire
+      expiresIn: 30 * 24 * 60 * 60 * 1000, // um período para que esse token inspire
     });
   },
 };
