@@ -102,10 +102,13 @@ class AbastecimentoController {
     }
 
     if (userLogged.role !== 'ROLE_ADMIN') {
-      abastecimento = abastecimento.filter(
-        (aliment) =>
-          String(aliment.userCreate._id) === String(userLogged._id)
-      );
+      abastecimento = abastecimento.filter((item) => {
+        if (item.userCreate) {
+          return (
+            String(item.userCreate._id) === String(userLogged._id)
+          );
+        }
+      });
     }
 
     return res.json(abastecimento);

@@ -2,6 +2,11 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate');
 
 const AdiantamentoSchema = new mongoose.Schema({
+  userCreate: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    default: '',
+  },
   title: {
     type: String,
     default: 'Adiantamento',

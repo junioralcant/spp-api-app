@@ -1,9 +1,12 @@
 const moment = require('moment');
 const Adiantamento = require('../models/Adiantamento');
 const Image = require('../models/Image');
+const User = require('../models/User');
 
 class AdiantamentoController {
   async index(req, res) {
+    const userLogged = await User.findById(req.userId);
+
     const { nomeLinha, dataIncio, dataFim, colaborador } = req.query;
 
     console.log(dataFim, dataIncio);
@@ -15,6 +18,10 @@ class AdiantamentoController {
       .populate({
         path: 'imagem',
         select: ['_id', 'url'],
+      })
+      .populate({
+        path: 'userCreate',
+        select: ['_id', 'name', 'email'],
       });
 
     //Filtro de data e nome linha
@@ -48,6 +55,10 @@ class AdiantamentoController {
             path: 'imagem',
             select: ['_id', 'url'],
           },
+          {
+            path: 'userCreate',
+            select: ['_id', 'name', 'email'],
+          },
         ],
         sort: '-createdAt',
       });
@@ -56,17 +67,27 @@ class AdiantamentoController {
     } else if (nomeLinha) {
       adiantamento = await Adiantamento.find({
         nomeLinha: new RegExp(nomeLinha, 'i'),
-      }).populate({
-        path: 'imagem',
-        select: ['_id', 'url'],
-      });
+      })
+        .populate({
+          path: 'imagem',
+          select: ['_id', 'url'],
+        })
+        .populate({
+          path: 'userCreate',
+          select: ['_id', 'name', 'email'],
+        });
     } else if (colaborador) {
       adiantamento = await Adiantamento.find({
         nomeColaborador: new RegExp(colaborador, 'i'),
-      }).populate({
-        path: 'imagem',
-        select: ['_id', 'url'],
-      });
+      })
+        .populate({
+          path: 'imagem',
+          select: ['_id', 'url'],
+        })
+        .populate({
+          path: 'userCreate',
+          select: ['_id', 'name', 'email'],
+        });
     }
 
     // Filtra por dados do mes e ano atual
@@ -80,10 +101,24 @@ class AdiantamentoController {
       );
     }
 
+    console.log(adiantamento);
+
+    if (userLogged.role !== 'ROLE_ADMIN') {
+      adiantamento = adiantamento.filter((item) => {
+        if (item.userCreate) {
+          return (
+            String(item.userCreate._id) === String(userLogged._id)
+          );
+        }
+      });
+    }
+
     return res.json(adiantamento);
   }
 
   async store(req, res) {
+    const userLogged = await User.findById(req.userId);
+
     const {
       originalname: name,
       size,
@@ -106,6 +141,7 @@ class AdiantamentoController {
       descricao,
       imagem: image._id,
       total,
+      userCreate: userLogged._id,
     });
 
     return res.json(adiantamento);
