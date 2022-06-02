@@ -1,9 +1,12 @@
 const moment = require('moment');
 const DespesaExtra = require('../models/DespesaExtra');
 const Image = require('../models/Image');
+const User = require('../models/User');
 
 class DespesaExtraController {
   async index(req, res) {
+    const userLogged = await User.findById(req.userId);
+
     const { nomeLinha, dataIncio, dataFim, item } = req.query;
 
     const filters = {};
@@ -13,6 +16,10 @@ class DespesaExtraController {
       .populate({
         path: 'imagem',
         select: ['_id', 'url'],
+      })
+      .populate({
+        path: 'userCreate',
+        select: ['_id', 'name', 'email'],
       });
 
     //Filtro de data e nome linha
@@ -44,6 +51,10 @@ class DespesaExtraController {
             path: 'imagem',
             select: ['_id', 'url'],
           },
+          {
+            path: 'userCreate',
+            select: ['_id', 'name', 'email'],
+          },
         ],
         sort: '-createdAt',
       });
@@ -52,17 +63,27 @@ class DespesaExtraController {
     } else if (nomeLinha) {
       despesaExtra = await DespesaExtra.find({
         nomeLinha: new RegExp(nomeLinha, 'i'),
-      }).populate({
-        path: 'imagem',
-        select: ['_id', 'url'],
-      });
+      })
+        .populate({
+          path: 'imagem',
+          select: ['_id', 'url'],
+        })
+        .populate({
+          path: 'userCreate',
+          select: ['_id', 'name', 'email'],
+        });
     } else if (item) {
       despesaExtra = await DespesaExtra.find({
         item: new RegExp(item, 'i'),
-      }).populate({
-        path: 'imagem',
-        select: ['_id', 'url'],
-      });
+      })
+        .populate({
+          path: 'imagem',
+          select: ['_id', 'url'],
+        })
+        .populate({
+          path: 'userCreate',
+          select: ['_id', 'name', 'email'],
+        });
     }
 
     // Filtra por dados do mes e ano atual
@@ -76,10 +97,22 @@ class DespesaExtraController {
       );
     }
 
+    if (userLogged.role !== 'ROLE_ADMIN') {
+      despesaExtra = despesaExtra.filter((item) => {
+        if (item.userCreate) {
+          return (
+            String(item.userCreate._id) === String(userLogged._id)
+          );
+        }
+      });
+    }
+
     return res.json(despesaExtra);
   }
 
   async store(req, res) {
+    const userLogged = await User.findById(req.userId);
+
     const {
       originalname: name,
       size,
@@ -111,6 +144,7 @@ class DespesaExtraController {
       total,
       quantidade,
       valorUnitario,
+      userCreate: userLogged._id,
     });
 
     return res.json(despesaExtra);
