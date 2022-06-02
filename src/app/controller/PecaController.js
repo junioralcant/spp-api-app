@@ -1,9 +1,12 @@
 const moment = require('moment');
 const Image = require('../models/Image');
 const Peca = require('../models/Peca');
+const User = require('../models/User');
 
 class PecaController {
   async index(req, res) {
+    const userLogged = await User.findById(req.userId);
+
     const { nomeLinha, dataIncio, dataFim, veiculo } = req.query;
 
     const filters = {};
@@ -13,6 +16,10 @@ class PecaController {
       .populate({
         path: 'imagem',
         select: ['_id', 'url'],
+      })
+      .populate({
+        path: 'userCreate',
+        select: ['_id', 'name', 'email'],
       });
 
     //Filtro de data e nome linha
@@ -44,6 +51,10 @@ class PecaController {
             path: 'imagem',
             select: ['_id', 'url'],
           },
+          {
+            path: 'userCreate',
+            select: ['_id', 'name', 'email'],
+          },
         ],
         sort: '-createdAt',
       });
@@ -52,17 +63,27 @@ class PecaController {
     } else if (nomeLinha) {
       peca = await Peca.find({
         nomeLinha: new RegExp(nomeLinha, 'i'),
-      }).populate({
-        path: 'imagem',
-        select: ['_id', 'url'],
-      });
+      })
+        .populate({
+          path: 'imagem',
+          select: ['_id', 'url'],
+        })
+        .populate({
+          path: 'userCreate',
+          select: ['_id', 'name', 'email'],
+        });
     } else if (veiculo) {
       peca = await Peca.find({
         veiculo: new RegExp(veiculo, 'i'),
-      }).populate({
-        path: 'imagem',
-        select: ['_id', 'url'],
-      });
+      })
+        .populate({
+          path: 'imagem',
+          select: ['_id', 'url'],
+        })
+        .populate({
+          path: 'userCreate',
+          select: ['_id', 'name', 'email'],
+        });
     }
 
     // Filtra por dados do mes e ano atual
@@ -76,10 +97,22 @@ class PecaController {
       );
     }
 
+    if (userLogged.role !== 'ROLE_ADMIN') {
+      peca = peca.filter((item) => {
+        if (item.userCreate) {
+          return (
+            String(item.userCreate._id) === String(userLogged._id)
+          );
+        }
+      });
+    }
+
     return res.json(peca);
   }
 
   async store(req, res) {
+    const userLogged = await User.findById(req.userId);
+
     const {
       originalname: name,
       size,
@@ -115,6 +148,7 @@ class PecaController {
       total,
       veiculo,
       valorUnitario,
+      userCreate: userLogged._id,
     });
 
     return res.json(peca);

@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate');
 
 const PecaSchema = new mongoose.Schema({
+  userCreate: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
   title: {
     type: String,
     default: 'Peças',
