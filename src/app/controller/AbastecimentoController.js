@@ -1,10 +1,14 @@
 const moment = require('moment');
 const Abastecimento = require('../models/Abastecimento');
+const User = require('../models/User');
+
 const Image = require('../models/Image');
 
 class AbastecimentoController {
   async index(req, res) {
     const { nomeLinha, dataIncio, dataFim, veiculo } = req.query;
+
+    const userLogged = await User.findById(req.userId);
 
     const filters = {};
 
@@ -13,6 +17,10 @@ class AbastecimentoController {
       .populate({
         path: 'imagem',
         select: ['_id', 'url'],
+      })
+      .populate({
+        path: 'userCreate',
+        select: ['_id', 'name', 'email'],
       });
 
     //Filtro de data e nome linha
@@ -46,6 +54,10 @@ class AbastecimentoController {
               path: 'imagem',
               select: ['_id', 'url'],
             },
+            {
+              path: 'userCreate',
+              select: ['_id', 'name', 'email'],
+            },
           ],
           sort: '-createdAt',
         }
@@ -55,17 +67,27 @@ class AbastecimentoController {
     } else if (nomeLinha) {
       abastecimento = await Abastecimento.find({
         nomeLinha: new RegExp(nomeLinha, 'i'),
-      }).populate({
-        path: 'imagem',
-        select: ['_id', 'url'],
-      });
+      })
+        .populate({
+          path: 'imagem',
+          select: ['_id', 'url'],
+        })
+        .populate({
+          path: 'userCreate',
+          select: ['_id', 'name', 'email'],
+        });
     } else if (veiculo) {
       abastecimento = await Abastecimento.find({
         veiculo: new RegExp(veiculo, 'i'),
-      }).populate({
-        path: 'imagem',
-        select: ['_id', 'url'],
-      });
+      })
+        .populate({
+          path: 'imagem',
+          select: ['_id', 'url'],
+        })
+        .populate({
+          path: 'userCreate',
+          select: ['_id', 'name', 'email'],
+        });
     }
 
     // Filtra por dados do mes e ano atual
@@ -79,10 +101,19 @@ class AbastecimentoController {
       );
     }
 
+    if (userLogged.role !== 'ROLE_ADMIN') {
+      abastecimento = abastecimento.filter(
+        (aliment) =>
+          String(aliment.userCreate._id) === String(userLogged._id)
+      );
+    }
+
     return res.json(abastecimento);
   }
 
   async store(req, res) {
+    const userLogged = await User.findById(req.userId);
+
     const {
       originalname: name,
       size,
@@ -114,6 +145,7 @@ class AbastecimentoController {
       total,
       veiculo,
       valorUnitario,
+      userCreate: userLogged._id,
     });
 
     return res.json(abastecimento);
