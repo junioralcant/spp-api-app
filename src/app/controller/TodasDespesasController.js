@@ -6,43 +6,75 @@ const Alimentacao = require('../models/Alimentacao');
 const DespesaExtra = require('../models/DespesaExtra');
 const Hospedagem = require('../models/Hospedagem');
 const Peca = require('../models/Peca');
-const Roco = require('../models/Roco');
+const User = require('../models/User');
 
 class TodasDespesasController {
   async index(req, res) {
+    const userLogged = await User.findById(req.userId);
+
     const { nomeLinha, dataIncio, dataFim } = req.query;
 
     let despesas = [];
 
-    let abastecimento = await Abastecimento.find().populate({
-      path: 'imagem',
-      select: ['_id', 'url'],
-    });
+    let abastecimento = await Abastecimento.find()
+      .populate({
+        path: 'imagem',
+        select: ['_id', 'url'],
+      })
+      .populate({
+        path: 'userCreate',
+        select: ['_id', 'name', 'email'],
+      });
 
-    let adiantamento = await Adiantamento.find().populate({
-      path: 'imagem',
-      select: ['_id', 'url'],
-    });
+    let adiantamento = await Adiantamento.find()
+      .populate({
+        path: 'imagem',
+        select: ['_id', 'url'],
+      })
+      .populate({
+        path: 'userCreate',
+        select: ['_id', 'name', 'email'],
+      });
 
-    let alimentacao = await Alimentacao.find().populate({
-      path: 'imagem',
-      select: ['_id', 'url'],
-    });
+    let alimentacao = await Alimentacao.find()
+      .populate({
+        path: 'imagem',
+        select: ['_id', 'url'],
+      })
+      .populate({
+        path: 'userCreate',
+        select: ['_id', 'name', 'email'],
+      });
 
-    let despesaExtra = await DespesaExtra.find().populate({
-      path: 'imagem',
-      select: ['_id', 'url'],
-    });
+    let despesaExtra = await DespesaExtra.find()
+      .populate({
+        path: 'imagem',
+        select: ['_id', 'url'],
+      })
+      .populate({
+        path: 'userCreate',
+        select: ['_id', 'name', 'email'],
+      });
 
-    let hospedagem = await Hospedagem.find().populate({
-      path: 'imagem',
-      select: ['_id', 'url'],
-    });
+    let hospedagem = await Hospedagem.find()
+      .populate({
+        path: 'imagem',
+        select: ['_id', 'url'],
+      })
+      .populate({
+        path: 'userCreate',
+        select: ['_id', 'name', 'email'],
+      });
 
-    let peca = await Peca.find().populate({
-      path: 'imagem',
-      select: ['_id', 'url'],
-    });
+    let peca = await Peca.find()
+      .populate({
+        path: 'imagem',
+        select: ['_id', 'url'],
+      })
+      .populate({
+        path: 'userCreate',
+        select: ['_id', 'name', 'email'],
+      });
 
     despesas = despesas.concat(
       abastecimento,
@@ -52,8 +84,6 @@ class TodasDespesasController {
       hospedagem,
       peca
     );
-
-    console.log(despesas.length);
 
     // Filtra por dados do mes e ano atual
     if (!dataIncio || !dataFim) {
@@ -102,7 +132,15 @@ class TodasDespesasController {
       }
     }
 
-    console.log('Despesa', despesas.length);
+    if (userLogged.role !== 'ROLE_ADMIN') {
+      despesas = despesas.filter((item) => {
+        if (item.userCreate) {
+          return (
+            String(item.userCreate._id) === String(userLogged._id)
+          );
+        }
+      });
+    }
 
     console.log(despesas.length);
 
