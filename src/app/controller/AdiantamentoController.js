@@ -101,8 +101,6 @@ class AdiantamentoController {
       );
     }
 
-    console.log(adiantamento);
-
     if (userLogged.role !== 'ROLE_ADMIN') {
       adiantamento = adiantamento.filter((item) => {
         if (item.userCreate) {

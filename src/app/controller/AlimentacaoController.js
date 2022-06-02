@@ -1,9 +1,12 @@
 const moment = require('moment');
 const Alimentacao = require('../models/Alimentacao');
 const Image = require('../models/Image');
+const User = require('../models/User');
 
 class AlimentacaoController {
   async index(req, res) {
+    const userLogged = await User.findById(req.userId);
+
     const { nomeLinha, dataIncio, dataFim } = req.query;
 
     const filters = {};
@@ -13,6 +16,10 @@ class AlimentacaoController {
       .populate({
         path: 'imagem',
         select: ['_id', 'url'],
+      })
+      .populate({
+        path: 'userCreate',
+        select: ['_id', 'name', 'email'],
       });
 
     //Filtro de data e nome linha
@@ -37,6 +44,10 @@ class AlimentacaoController {
             path: 'imagem',
             select: ['_id', 'url'],
           },
+          {
+            path: 'userCreate',
+            select: ['_id', 'name', 'email'],
+          },
         ],
         sort: '-createdAt',
       });
@@ -45,10 +56,15 @@ class AlimentacaoController {
     } else if (nomeLinha) {
       alimentacao = await Alimentacao.find({
         nomeLinha: new RegExp(nomeLinha, 'i'),
-      }).populate({
-        path: 'imagem',
-        select: ['_id', 'url'],
-      });
+      })
+        .populate({
+          path: 'imagem',
+          select: ['_id', 'url'],
+        })
+        .populate({
+          path: 'userCreate',
+          select: ['_id', 'name', 'email'],
+        });
     }
 
     // Filtra por dados do mes e ano atual
@@ -62,10 +78,22 @@ class AlimentacaoController {
       );
     }
 
+    if (userLogged.role !== 'ROLE_ADMIN') {
+      alimentacao = alimentacao.filter((item) => {
+        if (item.userCreate) {
+          return (
+            String(item.userCreate._id) === String(userLogged._id)
+          );
+        }
+      });
+    }
+
     return res.json(alimentacao);
   }
 
   async store(req, res) {
+    const userLogged = await User.findById(req.userId);
+
     const {
       originalname: name,
       size,
@@ -88,6 +116,7 @@ class AlimentacaoController {
       descricao,
       imagem: image._id,
       total,
+      userCreate: userLogged._id,
     });
 
     return res.json(alimentacao);
