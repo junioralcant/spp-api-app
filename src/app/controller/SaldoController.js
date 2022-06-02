@@ -1,15 +1,23 @@
 const moment = require('moment');
 const Saldo = require('../models/Saldo');
+const User = require('../models/User');
 
 class SaldoController {
   async index(req, res) {
+    const userLogged = await User.findById(req.userId);
+
     const { dataIncio, dataFim, allDatas } = req.query;
 
     console.log(allDatas);
 
     const filters = {};
 
-    let saldo = await Saldo.find().sort('-createdAt');
+    let saldo = await Saldo.find()
+      .sort('-createdAt')
+      .populate({
+        path: 'userCreate',
+        select: ['_id', 'name', 'email'],
+      });
 
     //Filtro de data e nome linha
     if (dataIncio && dataFim) {
@@ -27,6 +35,12 @@ class SaldoController {
       let saldoFilter = await Saldo.paginate(filters, {
         page: req.query.page || 1,
         limit: parseInt(req.query.limit_page) || 1000000,
+        populate: [
+          {
+            path: 'userCreate',
+            select: ['_id', 'name', 'email'],
+          },
+        ],
         sort: '-createdAt',
       });
 
@@ -44,10 +58,27 @@ class SaldoController {
       );
     }
 
+    if (userLogged.role !== 'ROLE_ADMIN') {
+      saldo = saldo.filter((item) => {
+        if (item.userCreate) {
+          return (
+            String(item.userCreate._id) === String(userLogged._id)
+          );
+        }
+      });
+    }
+
     return res.json(saldo);
   }
   async store(req, resp) {
-    const saldo = await Saldo.create(req.body);
+    const userLogged = await User.findById(req.userId);
+
+    const { total } = req.body;
+
+    const saldo = await Saldo.create({
+      total,
+      userCreate: userLogged._id,
+    });
 
     return resp.json(saldo);
   }
