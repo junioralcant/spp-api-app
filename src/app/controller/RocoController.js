@@ -1,9 +1,12 @@
 const moment = require('moment');
 const Image = require('../models/Image');
 const Roco = require('../models/Roco');
+const User = require('../models/User');
 
 class RocoController {
   async index(req, res) {
+    const userLogged = await User.findById(req.userId);
+
     const { nomeLinha, dataIncio, dataFim, nomeHotel } = req.query;
 
     const filters = {};
@@ -17,6 +20,10 @@ class RocoController {
       .populate({
         path: 'fotoDepois',
         select: ['_id', 'url'],
+      })
+      .populate({
+        path: 'userCreate',
+        select: ['_id', 'name', 'email'],
       });
 
     //Filtro de data e nome linha
@@ -48,6 +55,10 @@ class RocoController {
             path: 'fotoDepois',
             select: ['_id', 'url'],
           },
+          {
+            path: 'userCreate',
+            select: ['_id', 'name', 'email'],
+          },
         ],
         sort: '-createdAt',
       });
@@ -64,6 +75,10 @@ class RocoController {
         .populate({
           path: 'fotoDepois',
           select: ['_id', 'url'],
+        })
+        .populate({
+          path: 'userCreate',
+          select: ['_id', 'name', 'email'],
         });
     }
 
@@ -78,10 +93,22 @@ class RocoController {
       );
     }
 
+    if (userLogged.role !== 'ROLE_ADMIN') {
+      roco = roco.filter((item) => {
+        if (item.userCreate) {
+          return (
+            String(item.userCreate._id) === String(userLogged._id)
+          );
+        }
+      });
+    }
+
     return res.json(roco);
   }
 
   async store(req, res) {
+    const userLogged = await User.findById(req.userId);
+
     const { fotoAntes, fotoDepois } = req.files;
     let imgAntes = '';
     let imgDepois = '';
@@ -124,6 +151,7 @@ class RocoController {
       nomeLinha,
       fotoAntes: imgAntes._id,
       fotoDepois: imgDepois._id,
+      userCreate: userLogged._id,
     });
 
     return res.json(roco);
