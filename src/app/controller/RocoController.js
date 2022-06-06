@@ -145,10 +145,11 @@ class RocoController {
       });
     }
 
-    const { nomeLinha } = req.body;
+    const { nomeLinha, descricao } = req.body;
 
     const roco = await Roco.create({
       nomeLinha,
+      descricao,
       fotoAntes: imgAntes._id,
       fotoDepois: imgDepois._id,
       userCreate: userLogged._id,
