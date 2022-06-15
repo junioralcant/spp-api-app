@@ -272,16 +272,20 @@ class RocoController {
 
     const { fotoAntes: fotoAntesId, fotoDepois: fotoDepoisId } = roco;
 
-    const deleteImgAntes = await Image.findById(fotoAntesId);
+    if (fotoAntesId) {
+      const deleteImgAntes = await Image.findById(fotoAntesId);
 
-    if (deleteImgAntes) {
-      await deleteImgAntes.remove();
+      if (deleteImgAntes) {
+        await deleteImgAntes.remove();
+      }
     }
 
-    const deleteImgDepois = await Image.findById(fotoDepoisId);
+    if (fotoDepoisId) {
+      const deleteImgDepois = await Image.findById(fotoDepoisId);
 
-    if (deleteImgDepois) {
-      await deleteImgDepois.remove();
+      if (deleteImgDepois) {
+        await deleteImgDepois.remove();
+      }
     }
 
     await roco.remove();

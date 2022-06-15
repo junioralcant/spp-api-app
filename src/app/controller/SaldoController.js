@@ -6,9 +6,7 @@ class SaldoController {
   async index(req, res) {
     const userLogged = await User.findById(req.userId);
 
-    const { dataIncio, dataFim, allDatas } = req.query;
-
-    console.log(allDatas);
+    const { dataIncio, dataFim, allDatas, descricao } = req.query;
 
     const filters = {};
 
@@ -32,6 +30,10 @@ class SaldoController {
       filters.createdAt.$gte = inicio;
       filters.createdAt.$lte = fim;
 
+      if (descricao) {
+        filters.descricao = new RegExp(descricao, 'i');
+      }
+
       let saldoFilter = await Saldo.paginate(filters, {
         page: req.query.page || 1,
         limit: parseInt(req.query.limit_page) || 1000000,
@@ -45,6 +47,13 @@ class SaldoController {
       });
 
       saldo = saldoFilter.docs;
+    } else if (descricao) {
+      saldo = await Saldo.find({
+        descricao: new RegExp(descricao, 'i'),
+      }).populate({
+        path: 'userCreate',
+        select: ['_id', 'name', 'email'],
+      });
     }
 
     // Filtra por dados do mes e ano atual
@@ -73,10 +82,11 @@ class SaldoController {
   async store(req, resp) {
     const userLogged = await User.findById(req.userId);
 
-    const { total } = req.body;
+    const { total, descricao } = req.body;
 
     const saldo = await Saldo.create({
       total,
+      descricao,
       userCreate: userLogged._id,
     });
 
