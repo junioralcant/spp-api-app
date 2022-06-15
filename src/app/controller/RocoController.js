@@ -7,7 +7,7 @@ class RocoController {
   async index(req, res) {
     const userLogged = await User.findById(req.userId);
 
-    const { nomeLinha, dataIncio, dataFim, nomeHotel } = req.query;
+    const { nomeLinha, dataIncio, dataFim, descricao } = req.query;
 
     const filters = {};
 
@@ -43,6 +43,10 @@ class RocoController {
         filters.nomeLinha = new RegExp(nomeLinha, 'i');
       }
 
+      if (descricao) {
+        filters.descricao = new RegExp(descricao, 'i');
+      }
+
       let rocoFilter = await Roco.paginate(filters, {
         page: req.query.page || 1,
         limit: parseInt(req.query.limit_page) || 1000000,
@@ -67,6 +71,22 @@ class RocoController {
     } else if (nomeLinha) {
       roco = await Roco.find({
         nomeLinha: new RegExp(nomeLinha, 'i'),
+      })
+        .populate({
+          path: 'fotoAntes',
+          select: ['_id', 'url'],
+        })
+        .populate({
+          path: 'fotoDepois',
+          select: ['_id', 'url'],
+        })
+        .populate({
+          path: 'userCreate',
+          select: ['_id', 'name', 'email'],
+        });
+    } else if (descricao) {
+      roco = await Roco.find({
+        descricao: new RegExp(descricao, 'i'),
       })
         .populate({
           path: 'fotoAntes',
