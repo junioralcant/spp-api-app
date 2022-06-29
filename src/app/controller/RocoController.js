@@ -270,7 +270,7 @@ class RocoController {
   async delete(req, res) {
     const roco = await Roco.findById(req.params.id);
 
-    const { fotoAntes, fotoDepois: fotoDepois } = roco;
+    const { fotoAntes, fotoDepois } = roco;
 
     if (fotoAntes) {
       const deleteImgAntes = await Image.findById(fotoAntes);
