@@ -8,6 +8,9 @@ class RocoController {
     const userLogged = await User.findById(req.userId);
 
     const { nomeLinha, dataIncio, dataFim, descricao } = req.query;
+    console.log(nomeLinha);
+
+    console.log(descricao);
 
     const filters = {};
 
@@ -84,6 +87,12 @@ class RocoController {
           path: 'userCreate',
           select: ['_id', 'name', 'email'],
         });
+
+      if (descricao) {
+        roco = roco.filter((aliment) =>
+          aliment.descricao.match(descricao)
+        );
+      }
     } else if (descricao) {
       roco = await Roco.find({
         descricao: new RegExp(descricao, 'i'),
