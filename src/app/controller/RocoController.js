@@ -8,9 +8,6 @@ class RocoController {
     const userLogged = await User.findById(req.userId);
 
     const { nomeLinha, dataIncio, dataFim, descricao } = req.query;
-    console.log(nomeLinha);
-
-    console.log(descricao);
 
     const filters = {};
 
