@@ -87,13 +87,13 @@ class TodasDespesasController {
 
     // Filtra por dados do mes e ano atual
     if (!dataIncio || !dataFim) {
-      despesas = despesas.filter(
-        (despesa) =>
-          moment(despesa.createdAt).month() ===
-            moment(Date.now()).month() &&
-          moment(despesa.createdAt).year() ===
-            moment(Date.now()).year()
-      );
+      // despesas = despesas.filter(
+      //   (despesa) =>
+      //     moment(despesa.createdAt).month() ===
+      //       moment(Date.now()).month() &&
+      //     moment(despesa.createdAt).year() ===
+      //       moment(Date.now()).year()
+      // );
 
       if (nomeLinha) {
         despesas = despesas.filter((despesa) => {
