@@ -12,7 +12,7 @@ class TodasDespesasController {
   async index(req, res) {
     const userLogged = await User.findById(req.userId);
 
-    const { nomeLinha, dataIncio, dataFim } = req.query;
+    const { nomeLinha, dataIncio, dataFim, title } = req.query;
 
     let despesas = [];
 
@@ -104,6 +104,14 @@ class TodasDespesasController {
           }
         });
       }
+
+      if (title) {
+        despesas = despesas.filter((despesa) => {
+          if (despesa.title) {
+            return despesa.title.match(new RegExp(title, 'i'));
+          }
+        });
+      }
     } else {
       const inicio = moment(dataIncio).format(
         'YYYY-MM-DDT00:mm:ss.SSSZ'
@@ -127,6 +135,14 @@ class TodasDespesasController {
             return despesa.nomeLinha.match(
               new RegExp(nomeLinha, 'i')
             );
+          }
+        });
+      }
+
+      if (title) {
+        despesas = despesas.filter((despesa) => {
+          if (despesa.title) {
+            return despesa.title.match(new RegExp(title, 'i'));
           }
         });
       }
