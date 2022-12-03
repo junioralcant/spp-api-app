@@ -7,7 +7,7 @@ class AlimentacaoController {
   async index(req, res) {
     const userLogged = await User.findById(req.userId);
 
-    const { nomeLinha, dataIncio, dataFim } = req.query;
+    const {nomeLinha, dataIncio, dataFim} = req.query;
 
     const filters = {};
 
@@ -108,7 +108,12 @@ class AlimentacaoController {
       url,
     });
 
-    const { nomeLinha, quantidade, descricao, total } = req.body;
+    const {nomeLinha, quantidade, descricao, total, dataNota} =
+      req.body;
+
+    const data = !dataNota
+      ? new Date()
+      : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
 
     const alimentacao = await Alimentacao.create({
       nomeLinha,
@@ -117,13 +122,14 @@ class AlimentacaoController {
       imagem: image._id,
       total,
       userCreate: userLogged._id,
+      createdAt: data,
     });
 
     return res.json(alimentacao);
   }
 
   async show(req, res) {
-    const { id } = req.params;
+    const {id} = req.params;
 
     const alimentacoes = await Alimentacao.findById(id).populate({
       path: 'imagem',
@@ -134,12 +140,12 @@ class AlimentacaoController {
   }
 
   async update(req, res) {
-    const { id } = req.params;
+    const {id} = req.params;
 
     if (req.file) {
       const alimentacao = await Alimentacao.findById(id);
 
-      const { imagem: imageId } = alimentacao;
+      const {imagem: imageId} = alimentacao;
 
       const image = await Image.findById(imageId);
 
@@ -161,23 +167,46 @@ class AlimentacaoController {
         url,
       });
 
+      const {nomeLinha, quantidade, descricao, total, dataNota} =
+        req.body;
+
+      const data = !dataNota
+        ? new Date()
+        : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
+
       const alimentacaoUpdate = await Alimentacao.findByIdAndUpdate(
         id,
-        req.body,
+        {
+          nomeLinha,
+          quantidade,
+          descricao,
+          total,
+          imagem: imageCreate._id,
+          createdAt: data,
+        },
         {
           new: true,
         }
       );
 
-      alimentacaoUpdate.imagem = imageCreate._id;
-
-      alimentacaoUpdate.save();
-
       return res.json(alimentacaoUpdate);
     } else {
+      const {nomeLinha, quantidade, descricao, total, dataNota} =
+        req.body;
+
+      const data = !dataNota
+        ? new Date()
+        : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
+
       const alimentacao = await Alimentacao.findByIdAndUpdate(
         id,
-        req.body,
+        {
+          nomeLinha,
+          quantidade,
+          descricao,
+          total,
+          createdAt: data,
+        },
         {
           new: true,
         }
@@ -190,7 +219,7 @@ class AlimentacaoController {
   async delete(req, res) {
     const alimentacao = await Alimentacao.findById(req.params.id);
 
-    const { imagem: imageId } = alimentacao;
+    const {imagem: imageId} = alimentacao;
 
     const image = await Image.findById(imageId);
 
