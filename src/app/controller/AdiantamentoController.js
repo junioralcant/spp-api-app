@@ -7,7 +7,7 @@ class AdiantamentoController {
   async index(req, res) {
     const userLogged = await User.findById(req.userId);
 
-    const { nomeLinha, dataIncio, dataFim, colaborador } = req.query;
+    const {nomeLinha, dataIncio, dataFim, colaborador} = req.query;
 
     console.log(dataFim, dataIncio);
 
@@ -131,7 +131,12 @@ class AdiantamentoController {
       url,
     });
 
-    const { nomeLinha, nomeColaborador, descricao, total } = req.body;
+    const {nomeLinha, nomeColaborador, descricao, total, dataNota} =
+      req.body;
+
+    const data = !dataNota
+      ? new Date()
+      : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
 
     const adiantamento = await Adiantamento.create({
       nomeLinha,
@@ -140,13 +145,14 @@ class AdiantamentoController {
       imagem: image._id,
       total,
       userCreate: userLogged._id,
+      createdAt: data,
     });
 
     return res.json(adiantamento);
   }
 
   async show(req, res) {
-    const { id } = req.params;
+    const {id} = req.params;
 
     const alimentacoes = await Adiantamento.findById(id).populate({
       path: 'imagem',
@@ -157,16 +163,16 @@ class AdiantamentoController {
   }
 
   async update(req, res) {
-    const { id } = req.params;
+    const {id} = req.params;
 
     if (req.file) {
       const adiantamento = await Adiantamento.findById(id);
 
-      const { imagem: imageId } = adiantamento;
+      const {imagem: imageId} = adiantamento;
 
       const image = await Image.findById(imageId);
 
-      if (image._id) {
+      if (image) {
         await image.remove();
       }
 
@@ -184,23 +190,46 @@ class AdiantamentoController {
         url,
       });
 
+      const {nomeLinha, nomeColaborador, descricao, total, dataNota} =
+        req.body;
+
+      const data = !dataNota
+        ? new Date()
+        : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
+
       const adiantamentoUpdate = await Adiantamento.findByIdAndUpdate(
         id,
-        req.body,
+        {
+          nomeLinha,
+          nomeColaborador,
+          descricao,
+          total,
+          imagem: imageCreate._id,
+          createdAt: data,
+        },
         {
           new: true,
         }
       );
 
-      adiantamentoUpdate.imagem = imageCreate._id;
-
-      adiantamentoUpdate.save();
-
       return res.json(adiantamentoUpdate);
     } else {
+      const {nomeLinha, nomeColaborador, descricao, total, dataNota} =
+        req.body;
+
+      const data = !dataNota
+        ? new Date()
+        : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
+
       const adiantamento = await Adiantamento.findByIdAndUpdate(
         id,
-        req.body,
+        {
+          nomeLinha,
+          nomeColaborador,
+          descricao,
+          total,
+          createdAt: data,
+        },
         {
           new: true,
         }
@@ -213,7 +242,7 @@ class AdiantamentoController {
   async delete(req, res) {
     const adiantamento = await Adiantamento.findById(req.params.id);
 
-    const { imagem: imageId } = adiantamento;
+    const {imagem: imageId} = adiantamento;
 
     const image = await Image.findById(imageId);
 
