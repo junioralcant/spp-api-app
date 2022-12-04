@@ -7,7 +7,7 @@ class DespesaExtraController {
   async index(req, res) {
     const userLogged = await User.findById(req.userId);
 
-    const { nomeLinha, dataIncio, dataFim, item } = req.query;
+    const {nomeLinha, dataIncio, dataFim, item} = req.query;
 
     const filters = {};
 
@@ -134,7 +134,12 @@ class DespesaExtraController {
       total,
       quantidade,
       valorUnitario,
+      dataNota,
     } = req.body;
+
+    const data = !dataNota
+      ? new Date()
+      : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
 
     const despesaExtra = await DespesaExtra.create({
       nomeLinha,
@@ -145,13 +150,14 @@ class DespesaExtraController {
       quantidade,
       valorUnitario,
       userCreate: userLogged._id,
+      createdAt: data,
     });
 
     return res.json(despesaExtra);
   }
 
   async show(req, res) {
-    const { id } = req.params;
+    const {id} = req.params;
 
     const alimentacoes = await DespesaExtra.findById(id).populate({
       path: 'imagem',
@@ -162,12 +168,12 @@ class DespesaExtraController {
   }
 
   async update(req, res) {
-    const { id } = req.params;
+    const {id} = req.params;
 
     if (req.file) {
       const despesaExtra = await DespesaExtra.findById(id);
 
-      const { imagem: imageId } = despesaExtra;
+      const {imagem: imageId} = despesaExtra;
 
       const image = await Image.findById(imageId);
 
@@ -189,29 +195,68 @@ class DespesaExtraController {
         url,
       });
 
+      const {
+        nomeLinha,
+        item,
+        descricao,
+        total,
+        quantidade,
+        valorUnitario,
+        dataNota,
+      } = req.body;
+
+      const data = !dataNota
+        ? new Date()
+        : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
+
       const despesaExtraUpdate = await DespesaExtra.findByIdAndUpdate(
         id,
-        req.body,
+        {
+          nomeLinha,
+          item,
+          descricao,
+          total,
+          quantidade,
+          valorUnitario,
+          imagem: imageCreate._id,
+          createdAt: data,
+        },
         {
           new: true,
         }
       );
-
-      despesaExtraUpdate.imagem = imageCreate._id;
-
-      despesaExtraUpdate.save();
 
       return res.json(despesaExtraUpdate);
     } else {
+      const {
+        nomeLinha,
+        item,
+        descricao,
+        total,
+        quantidade,
+        valorUnitario,
+        dataNota,
+      } = req.body;
+
+      const data = !dataNota
+        ? new Date()
+        : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
+
       const despesaExtra = await DespesaExtra.findByIdAndUpdate(
         id,
-        req.body,
+        {
+          nomeLinha,
+          item,
+          descricao,
+          total,
+          quantidade,
+          valorUnitario,
+          createdAt: data,
+        },
         {
           new: true,
         }
       );
-
-      console.log(despesaExtra);
 
       return res.json(despesaExtra);
     }
@@ -220,7 +265,7 @@ class DespesaExtraController {
   async delete(req, res) {
     const despesaExtra = await DespesaExtra.findById(req.params.id);
 
-    const { imagem: imageId } = despesaExtra;
+    const {imagem: imageId} = despesaExtra;
 
     const image = await Image.findById(imageId);
 
