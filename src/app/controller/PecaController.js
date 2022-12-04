@@ -7,7 +7,7 @@ class PecaController {
   async index(req, res) {
     const userLogged = await User.findById(req.userId);
 
-    const { nomeLinha, dataIncio, dataFim, veiculo } = req.query;
+    const {nomeLinha, dataIncio, dataFim, veiculo} = req.query;
 
     const filters = {};
 
@@ -136,7 +136,12 @@ class PecaController {
       total,
       veiculo,
       valorUnitario,
+      dataNota,
     } = req.body;
+
+    const data = !dataNota
+      ? new Date()
+      : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
 
     const peca = await Peca.create({
       nomeLinha,
@@ -149,13 +154,14 @@ class PecaController {
       veiculo,
       valorUnitario,
       userCreate: userLogged._id,
+      createdAt: data,
     });
 
     return res.json(peca);
   }
 
   async show(req, res) {
-    const { id } = req.params;
+    const {id} = req.params;
 
     const alimentacoes = await Peca.findById(id).populate({
       path: 'imagem',
@@ -166,16 +172,16 @@ class PecaController {
   }
 
   async update(req, res) {
-    const { id } = req.params;
+    const {id} = req.params;
 
     if (req.file) {
       const peca = await Peca.findById(id);
 
-      const { imagem: imageId } = peca;
+      const {imagem: imageId} = peca;
 
       const image = await Image.findById(imageId);
 
-      if (image._id) {
+      if (image) {
         await image.remove();
       }
 
@@ -193,19 +199,76 @@ class PecaController {
         url,
       });
 
-      const pecaUpdate = await Peca.findByIdAndUpdate(id, req.body, {
-        new: true,
-      });
+      const {
+        nomeLinha,
+        nomePeca,
+        quantidade,
+        desconto,
+        descricao,
+        total,
+        veiculo,
+        valorUnitario,
+        dataNota,
+      } = req.body;
 
-      pecaUpdate.imagem = imageCreate._id;
+      const data = !dataNota
+        ? new Date()
+        : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
 
-      pecaUpdate.save();
+      const pecaUpdate = await Peca.findByIdAndUpdate(
+        id,
+        {
+          nomeLinha,
+          nomePeca,
+          quantidade,
+          desconto,
+          descricao,
+          imagem: imageCreate._id,
+          total,
+          veiculo,
+          valorUnitario,
+          createdAt: data,
+        },
+        {
+          new: true,
+        }
+      );
 
       return res.json(pecaUpdate);
     } else {
-      const peca = await Peca.findByIdAndUpdate(id, req.body, {
-        new: true,
-      });
+      const {
+        nomeLinha,
+        nomePeca,
+        quantidade,
+        desconto,
+        descricao,
+        total,
+        veiculo,
+        valorUnitario,
+        dataNota,
+      } = req.body;
+
+      const data = !dataNota
+        ? new Date()
+        : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
+
+      const peca = await Peca.findByIdAndUpdate(
+        id,
+        {
+          nomeLinha,
+          nomePeca,
+          quantidade,
+          desconto,
+          descricao,
+          total,
+          veiculo,
+          valorUnitario,
+          createdAt: data,
+        },
+        {
+          new: true,
+        }
+      );
 
       res.json(peca);
     }
@@ -214,7 +277,7 @@ class PecaController {
   async delete(req, res) {
     const peca = await Peca.findById(req.params.id);
 
-    const { imagem: imageId } = peca;
+    const {imagem: imageId} = peca;
 
     const image = await Image.findById(imageId);
 
