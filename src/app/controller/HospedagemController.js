@@ -139,7 +139,7 @@ class HospedagemController {
 
     const data = !dataNota
       ? new Date()
-      : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
+      : moment(dataNota).format('YYYY-MM-DDT00:1m:ss.SSSZ');
 
     const hospedagem = await Hospedagem.create({
       nomeLinha,
@@ -207,7 +207,7 @@ class HospedagemController {
 
       const data = !dataNota
         ? new Date()
-        : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
+        : moment(dataNota).format('YYYY-MM-DDT00:1m:ss.SSSZ');
 
       const hospedagemUpdate = await Hospedagem.findByIdAndUpdate(
         id,
@@ -240,7 +240,7 @@ class HospedagemController {
 
       const data = !dataNota
         ? new Date()
-        : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
+        : moment(dataNota).format('YYYY-MM-DDT00:1m:ss.SSSZ');
 
       const hospedagem = await Hospedagem.findByIdAndUpdate(
         id,

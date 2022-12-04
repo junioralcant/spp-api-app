@@ -7,7 +7,7 @@ class RocoController {
   async index(req, res) {
     const userLogged = await User.findById(req.userId);
 
-    const { nomeLinha, dataIncio, dataFim, descricao } = req.query;
+    const {nomeLinha, dataIncio, dataFim, descricao} = req.query;
 
     const filters = {};
 
@@ -135,7 +135,7 @@ class RocoController {
   async store(req, res) {
     const userLogged = await User.findById(req.userId);
 
-    const { fotoAntes, fotoDepois } = req.files;
+    const {fotoAntes, fotoDepois} = req.files;
     let imgAntes = '';
     let imgDepois = '';
 
@@ -171,7 +171,9 @@ class RocoController {
       });
     }
 
-    const { nomeLinha, descricao } = req.body;
+    const {nomeLinha, descricao, dataNota} = req.body;
+
+    const data = !dataNota ? new Date() : dataNota;
 
     const roco = await Roco.create({
       nomeLinha,
@@ -179,13 +181,14 @@ class RocoController {
       fotoAntes: imgAntes._id,
       fotoDepois: imgDepois._id,
       userCreate: userLogged._id,
+      createdAt: data,
     });
 
     return res.json(roco);
   }
 
   async show(req, res) {
-    const { id } = req.params;
+    const {id} = req.params;
 
     const roco = await Roco.findById(id)
       .populate({
@@ -201,17 +204,16 @@ class RocoController {
   }
 
   async update(req, res) {
-    const { id } = req.params;
+    const {id} = req.params;
 
     if (req.files) {
       const roco = await Roco.findByIdAndUpdate(id, req.body, {
         new: true,
       });
 
-      const { fotoAntes: fotoAntesId, fotoDepois: fotoDepoisId } =
-        roco;
+      const {fotoAntes: fotoAntesId, fotoDepois: fotoDepoisId} = roco;
 
-      const { fotoAntes, fotoDepois } = req.files;
+      const {fotoAntes, fotoDepois} = req.files;
 
       if (fotoAntes) {
         const {
@@ -276,7 +278,7 @@ class RocoController {
   async delete(req, res) {
     const roco = await Roco.findById(req.params.id);
 
-    const { fotoAntes, fotoDepois } = roco;
+    const {fotoAntes, fotoDepois} = roco;
 
     if (fotoAntes) {
       const deleteImgAntes = await Image.findById(fotoAntes);

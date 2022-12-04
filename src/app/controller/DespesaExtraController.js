@@ -139,7 +139,7 @@ class DespesaExtraController {
 
     const data = !dataNota
       ? new Date()
-      : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
+      : moment(dataNota).format('YYYY-MM-DDT00:1m:ss.SSSZ');
 
     const despesaExtra = await DespesaExtra.create({
       nomeLinha,
@@ -207,7 +207,7 @@ class DespesaExtraController {
 
       const data = !dataNota
         ? new Date()
-        : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
+        : moment(dataNota).format('YYYY-MM-DDT00:1m:ss.SSSZ');
 
       const despesaExtraUpdate = await DespesaExtra.findByIdAndUpdate(
         id,
@@ -240,7 +240,7 @@ class DespesaExtraController {
 
       const data = !dataNota
         ? new Date()
-        : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
+        : moment(dataNota).format('YYYY-MM-DDT00:1m:ss.SSSZ');
 
       const despesaExtra = await DespesaExtra.findByIdAndUpdate(
         id,

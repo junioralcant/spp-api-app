@@ -113,7 +113,7 @@ class AlimentacaoController {
 
     const data = !dataNota
       ? new Date()
-      : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
+      : moment(dataNota).format('YYYY-MM-DDT00:1m:ss.SSSZ');
 
     const alimentacao = await Alimentacao.create({
       nomeLinha,
@@ -172,7 +172,7 @@ class AlimentacaoController {
 
       const data = !dataNota
         ? new Date()
-        : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
+        : moment(dataNota).format('YYYY-MM-DDT00:1m:ss.SSSZ');
 
       const alimentacaoUpdate = await Alimentacao.findByIdAndUpdate(
         id,
@@ -196,7 +196,7 @@ class AlimentacaoController {
 
       const data = !dataNota
         ? new Date()
-        : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
+        : moment(dataNota).format('YYYY-MM-DDT00:1m:ss.SSSZ');
 
       const alimentacao = await Alimentacao.findByIdAndUpdate(
         id,

@@ -143,7 +143,7 @@ class AbastecimentoController {
 
     const data = !dataNota
       ? new Date()
-      : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
+      : moment(dataNota).format('YYYY-MM-DDT00:1m:ss.SSSZ');
 
     const abastecimento = await Abastecimento.create({
       nomeLinha,
@@ -211,7 +211,7 @@ class AbastecimentoController {
 
       const data = !dataNota
         ? new Date()
-        : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
+        : moment(dataNota).format('YYYY-MM-DDT00:1m:ss.SSSZ');
 
       const abastecimentoUpdate =
         await Abastecimento.findByIdAndUpdate(
@@ -245,7 +245,7 @@ class AbastecimentoController {
 
       const data = !dataNota
         ? new Date()
-        : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
+        : moment(dataNota).format('YYYY-MM-DDT00:1m:ss.SSSZ');
 
       const abastecimento = await Abastecimento.findByIdAndUpdate(
         id,

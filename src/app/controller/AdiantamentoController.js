@@ -136,7 +136,7 @@ class AdiantamentoController {
 
     const data = !dataNota
       ? new Date()
-      : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
+      : moment(dataNota).format('YYYY-MM-DDT00:1m:ss.SSSZ');
 
     const adiantamento = await Adiantamento.create({
       nomeLinha,
@@ -195,7 +195,7 @@ class AdiantamentoController {
 
       const data = !dataNota
         ? new Date()
-        : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
+        : moment(dataNota).format('YYYY-MM-DDT00:1m:ss.SSSZ');
 
       const adiantamentoUpdate = await Adiantamento.findByIdAndUpdate(
         id,
@@ -219,7 +219,7 @@ class AdiantamentoController {
 
       const data = !dataNota
         ? new Date()
-        : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
+        : moment(dataNota).format('YYYY-MM-DDT00:1m:ss.SSSZ');
 
       const adiantamento = await Adiantamento.findByIdAndUpdate(
         id,

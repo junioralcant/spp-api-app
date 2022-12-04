@@ -12,7 +12,7 @@ class TodasDespesasController {
   async index(req, res) {
     const userLogged = await User.findById(req.userId);
 
-    const { nomeLinha, dataIncio, dataFim, title } = req.query;
+    const {nomeLinha, dataIncio, dataFim, title} = req.query;
 
     let despesas = [];
 
