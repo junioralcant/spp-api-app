@@ -6,7 +6,7 @@ const Image = require('../models/Image');
 
 class AbastecimentoController {
   async index(req, res) {
-    const { nomeLinha, dataIncio, dataFim, veiculo } = req.query;
+    const {nomeLinha, dataIncio, dataFim, veiculo} = req.query;
 
     const userLogged = await User.findById(req.userId);
 
@@ -138,7 +138,12 @@ class AbastecimentoController {
       total,
       veiculo,
       valorUnitario,
+      dataNota,
     } = req.body;
+
+    const data = !dataNota
+      ? new Date()
+      : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
 
     const abastecimento = await Abastecimento.create({
       nomeLinha,
@@ -149,13 +154,14 @@ class AbastecimentoController {
       veiculo,
       valorUnitario,
       userCreate: userLogged._id,
+      createdAt: data,
     });
 
     return res.json(abastecimento);
   }
 
   async show(req, res) {
-    const { id } = req.params;
+    const {id} = req.params;
 
     const alimentacoes = await Abastecimento.findById(id).populate({
       path: 'imagem',
@@ -166,12 +172,12 @@ class AbastecimentoController {
   }
 
   async update(req, res) {
-    const { id } = req.params;
+    const {id} = req.params;
 
     if (req.file) {
       const abastecimento = await Abastecimento.findById(id);
 
-      const { imagem: imageId } = abastecimento;
+      const {imagem: imageId} = abastecimento;
 
       const image = await Image.findById(imageId);
 
@@ -193,20 +199,65 @@ class AbastecimentoController {
         url,
       });
 
+      const {
+        nomeLinha,
+        litros,
+        descricao,
+        total,
+        veiculo,
+        valorUnitario,
+        dataNota,
+      } = req.body;
+
+      const data = !dataNota
+        ? new Date()
+        : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
+
       const abastecimentoUpdate =
-        await Abastecimento.findByIdAndUpdate(id, req.body, {
-          new: true,
-        });
-
-      abastecimentoUpdate.imagem = imageCreate._id;
-
-      abastecimentoUpdate.save();
+        await Abastecimento.findByIdAndUpdate(
+          id,
+          {
+            nomeLinha,
+            litros,
+            descricao,
+            total,
+            veiculo,
+            imagem: imageCreate._id,
+            valorUnitario,
+            createdAt: data,
+          },
+          {
+            new: true,
+          }
+        );
 
       return res.json(abastecimentoUpdate);
     } else {
+      const {
+        nomeLinha,
+        litros,
+        descricao,
+        total,
+        veiculo,
+        valorUnitario,
+        dataNota,
+      } = req.body;
+
+      const data = !dataNota
+        ? new Date()
+        : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
+
       const abastecimento = await Abastecimento.findByIdAndUpdate(
         id,
-        req.body,
+        {
+          nomeLinha,
+          litros,
+          descricao,
+          total,
+          veiculo,
+          valorUnitario,
+          createdAt: data,
+        },
         {
           new: true,
         }
@@ -219,7 +270,7 @@ class AbastecimentoController {
   async delete(req, res) {
     const abastecimento = await Abastecimento.findById(req.params.id);
 
-    const { imagem: imageId } = abastecimento;
+    const {imagem: imageId} = abastecimento;
 
     const image = await Image.findById(imageId);
 
