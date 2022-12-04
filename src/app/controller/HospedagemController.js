@@ -7,7 +7,7 @@ class HospedagemController {
   async index(req, res) {
     const userLogged = await User.findById(req.userId);
 
-    const { nomeLinha, dataIncio, dataFim, nomeHotel } = req.query;
+    const {nomeLinha, dataIncio, dataFim, nomeHotel} = req.query;
 
     const filters = {};
 
@@ -134,7 +134,12 @@ class HospedagemController {
       total,
       diarias,
       valorUnitario,
+      dataNota,
     } = req.body;
+
+    const data = !dataNota
+      ? new Date()
+      : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
 
     const hospedagem = await Hospedagem.create({
       nomeLinha,
@@ -145,13 +150,14 @@ class HospedagemController {
       diarias,
       valorUnitario,
       userCreate: userLogged._id,
+      createdAt: data,
     });
 
     return res.json(hospedagem);
   }
 
   async show(req, res) {
-    const { id } = req.params;
+    const {id} = req.params;
 
     const alimentacoes = await Hospedagem.findById(id).populate({
       path: 'imagem',
@@ -162,12 +168,12 @@ class HospedagemController {
   }
 
   async update(req, res) {
-    const { id } = req.params;
+    const {id} = req.params;
 
     if (req.file) {
       const hospedagem = await Hospedagem.findById(id);
 
-      const { imagem: imageId } = hospedagem;
+      const {imagem: imageId} = hospedagem;
 
       const image = await Image.findById(imageId);
 
@@ -189,23 +195,64 @@ class HospedagemController {
         url,
       });
 
+      const {
+        nomeLinha,
+        nomeHotel,
+        descricao,
+        total,
+        diarias,
+        valorUnitario,
+        dataNota,
+      } = req.body;
+
+      const data = !dataNota
+        ? new Date()
+        : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
+
       const hospedagemUpdate = await Hospedagem.findByIdAndUpdate(
         id,
-        req.body,
+        {
+          nomeLinha,
+          nomeHotel,
+          descricao,
+          total,
+          diarias,
+          imagem: imageCreate._id,
+          valorUnitario,
+          createdAt: data,
+        },
         {
           new: true,
         }
       );
 
-      hospedagemUpdate.imagem = imageCreate._id;
-
-      hospedagemUpdate.save();
-
       return res.json(hospedagemUpdate);
     } else {
+      const {
+        nomeLinha,
+        nomeHotel,
+        descricao,
+        total,
+        diarias,
+        valorUnitario,
+        dataNota,
+      } = req.body;
+
+      const data = !dataNota
+        ? new Date()
+        : moment(dataNota).format('YYYY-MM-DDT00:mm:ss.SSSZ');
+
       const hospedagem = await Hospedagem.findByIdAndUpdate(
         id,
-        req.body,
+        {
+          nomeLinha,
+          nomeHotel,
+          descricao,
+          total,
+          diarias,
+          valorUnitario,
+          createdAt: data,
+        },
         {
           new: true,
         }
@@ -218,7 +265,7 @@ class HospedagemController {
   async delete(req, res) {
     const hospedagem = await Hospedagem.findById(req.params.id);
 
-    const { imagem: imageId } = hospedagem;
+    const {imagem: imageId} = hospedagem;
 
     const image = await Image.findById(imageId);
 
