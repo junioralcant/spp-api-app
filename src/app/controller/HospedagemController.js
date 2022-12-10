@@ -135,6 +135,7 @@ class HospedagemController {
       diarias,
       valorUnitario,
       dataNota,
+      tipoPagamento,
     } = req.body;
 
     const data = !dataNota
@@ -149,6 +150,7 @@ class HospedagemController {
       total,
       diarias,
       valorUnitario,
+      tipoPagamento,
       userCreate: userLogged._id,
       createdAt: data,
     });
@@ -202,6 +204,7 @@ class HospedagemController {
         total,
         diarias,
         valorUnitario,
+        tipoPagamento,
         dataNota,
       } = req.body;
 
@@ -217,6 +220,7 @@ class HospedagemController {
           descricao,
           total,
           diarias,
+          tipoPagamento,
           imagem: imageCreate._id,
           valorUnitario,
           createdAt: data,
@@ -234,6 +238,7 @@ class HospedagemController {
         descricao,
         total,
         diarias,
+        tipoPagamento,
         valorUnitario,
         dataNota,
       } = req.body;
@@ -251,6 +256,7 @@ class HospedagemController {
           total,
           diarias,
           valorUnitario,
+          tipoPagamento,
           createdAt: data,
         },
         {
