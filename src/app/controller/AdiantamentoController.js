@@ -131,8 +131,14 @@ class AdiantamentoController {
       url,
     });
 
-    const {nomeLinha, nomeColaborador, descricao, total, dataNota} =
-      req.body;
+    const {
+      nomeLinha,
+      nomeColaborador,
+      descricao,
+      total,
+      dataNota,
+      tipoPagamento,
+    } = req.body;
 
     const data = !dataNota
       ? new Date()
@@ -143,6 +149,7 @@ class AdiantamentoController {
       nomeColaborador,
       descricao,
       imagem: image._id,
+      tipoPagamento,
       total,
       userCreate: userLogged._id,
       createdAt: data,
@@ -190,8 +197,14 @@ class AdiantamentoController {
         url,
       });
 
-      const {nomeLinha, nomeColaborador, descricao, total, dataNota} =
-        req.body;
+      const {
+        nomeLinha,
+        nomeColaborador,
+        descricao,
+        total,
+        dataNota,
+        tipoPagamento,
+      } = req.body;
 
       const data = !dataNota
         ? new Date()
@@ -204,6 +217,7 @@ class AdiantamentoController {
           nomeColaborador,
           descricao,
           total,
+          tipoPagamento,
           imagem: imageCreate._id,
           createdAt: data,
         },
@@ -214,8 +228,14 @@ class AdiantamentoController {
 
       return res.json(adiantamentoUpdate);
     } else {
-      const {nomeLinha, nomeColaborador, descricao, total, dataNota} =
-        req.body;
+      const {
+        nomeLinha,
+        nomeColaborador,
+        descricao,
+        total,
+        dataNota,
+        tipoPagamento,
+      } = req.body;
 
       const data = !dataNota
         ? new Date()
@@ -228,6 +248,7 @@ class AdiantamentoController {
           nomeColaborador,
           descricao,
           total,
+          tipoPagamento,
           createdAt: data,
         },
         {
