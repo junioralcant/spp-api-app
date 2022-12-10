@@ -108,8 +108,14 @@ class AlimentacaoController {
       url,
     });
 
-    const {nomeLinha, quantidade, descricao, total, dataNota} =
-      req.body;
+    const {
+      nomeLinha,
+      quantidade,
+      descricao,
+      total,
+      dataNota,
+      tipoPagamento,
+    } = req.body;
 
     const data = !dataNota
       ? new Date()
@@ -121,6 +127,7 @@ class AlimentacaoController {
       descricao,
       imagem: image._id,
       total,
+      tipoPagamento,
       userCreate: userLogged._id,
       createdAt: data,
     });
@@ -167,8 +174,14 @@ class AlimentacaoController {
         url,
       });
 
-      const {nomeLinha, quantidade, descricao, total, dataNota} =
-        req.body;
+      const {
+        nomeLinha,
+        quantidade,
+        descricao,
+        total,
+        dataNota,
+        tipoPagamento,
+      } = req.body;
 
       const data = !dataNota
         ? new Date()
@@ -181,6 +194,7 @@ class AlimentacaoController {
           quantidade,
           descricao,
           total,
+          tipoPagamento,
           imagem: imageCreate._id,
           createdAt: data,
         },
@@ -191,8 +205,14 @@ class AlimentacaoController {
 
       return res.json(alimentacaoUpdate);
     } else {
-      const {nomeLinha, quantidade, descricao, total, dataNota} =
-        req.body;
+      const {
+        nomeLinha,
+        quantidade,
+        descricao,
+        total,
+        dataNota,
+        tipoPagamento,
+      } = req.body;
 
       const data = !dataNota
         ? new Date()
@@ -205,6 +225,7 @@ class AlimentacaoController {
           quantidade,
           descricao,
           total,
+          tipoPagamento,
           createdAt: data,
         },
         {
