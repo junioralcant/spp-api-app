@@ -135,6 +135,7 @@ class DespesaExtraController {
       quantidade,
       valorUnitario,
       dataNota,
+      tipoPagamento,
     } = req.body;
 
     const data = !dataNota
@@ -149,6 +150,7 @@ class DespesaExtraController {
       total,
       quantidade,
       valorUnitario,
+      tipoPagamento,
       userCreate: userLogged._id,
       createdAt: data,
     });
@@ -203,6 +205,7 @@ class DespesaExtraController {
         quantidade,
         valorUnitario,
         dataNota,
+        tipoPagamento,
       } = req.body;
 
       const data = !dataNota
@@ -218,6 +221,7 @@ class DespesaExtraController {
           total,
           quantidade,
           valorUnitario,
+          tipoPagamento,
           imagem: imageCreate._id,
           createdAt: data,
         },
@@ -235,6 +239,7 @@ class DespesaExtraController {
         total,
         quantidade,
         valorUnitario,
+        tipoPagamento,
         dataNota,
       } = req.body;
 
@@ -251,6 +256,7 @@ class DespesaExtraController {
           total,
           quantidade,
           valorUnitario,
+          tipoPagamento,
           createdAt: data,
         },
         {

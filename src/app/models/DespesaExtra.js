@@ -26,6 +26,10 @@ const DespesaExtraSchema = new mongoose.Schema({
   quantidade: {
     type: String,
   },
+  tipoPagamento: {
+    type: String,
+    default: '',
+  },
   total: {
     type: Number,
   },
