@@ -136,6 +136,7 @@ class PecaController {
       total,
       veiculo,
       valorUnitario,
+      tipoPagamento,
       dataNota,
     } = req.body;
 
@@ -153,6 +154,7 @@ class PecaController {
       total,
       veiculo,
       valorUnitario,
+      tipoPagamento,
       userCreate: userLogged._id,
       createdAt: data,
     });
@@ -207,6 +209,7 @@ class PecaController {
         descricao,
         total,
         veiculo,
+        tipoPagamento,
         valorUnitario,
         dataNota,
       } = req.body;
@@ -227,6 +230,7 @@ class PecaController {
           total,
           veiculo,
           valorUnitario,
+          tipoPagamento,
           createdAt: data,
         },
         {
@@ -245,6 +249,7 @@ class PecaController {
         total,
         veiculo,
         valorUnitario,
+        tipoPagamento,
         dataNota,
       } = req.body;
 
@@ -263,6 +268,7 @@ class PecaController {
           total,
           veiculo,
           valorUnitario,
+          tipoPagamento,
           createdAt: data,
         },
         {

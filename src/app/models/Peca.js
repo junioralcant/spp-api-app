@@ -35,6 +35,10 @@ const PecaSchema = new mongoose.Schema({
   desconto: {
     type: Number,
   },
+  tipoPagamento: {
+    type: String,
+    default: '',
+  },
   total: {
     type: Number,
   },
