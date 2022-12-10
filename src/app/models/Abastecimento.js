@@ -29,6 +29,10 @@ const AbastecimetoSchema = new mongoose.Schema({
   valorUnitario: {
     type: Number,
   },
+  tipoPagamento: {
+    type: String,
+    default: '',
+  },
   total: {
     type: Number,
   },

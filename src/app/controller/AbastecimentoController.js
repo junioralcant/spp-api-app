@@ -139,6 +139,7 @@ class AbastecimentoController {
       veiculo,
       valorUnitario,
       dataNota,
+      tipoPagamento,
     } = req.body;
 
     const data = !dataNota
@@ -153,6 +154,7 @@ class AbastecimentoController {
       total,
       veiculo,
       valorUnitario,
+      tipoPagamento,
       userCreate: userLogged._id,
       createdAt: data,
     });
@@ -206,6 +208,7 @@ class AbastecimentoController {
         total,
         veiculo,
         valorUnitario,
+        tipoPagamento,
         dataNota,
       } = req.body;
 
@@ -222,6 +225,7 @@ class AbastecimentoController {
             descricao,
             total,
             veiculo,
+            tipoPagamento,
             imagem: imageCreate._id,
             valorUnitario,
             createdAt: data,
@@ -240,6 +244,7 @@ class AbastecimentoController {
         total,
         veiculo,
         valorUnitario,
+        tipoPagamento,
         dataNota,
       } = req.body;
 
@@ -255,6 +260,7 @@ class AbastecimentoController {
           descricao,
           total,
           veiculo,
+          tipoPagamento,
           valorUnitario,
           createdAt: data,
         },
