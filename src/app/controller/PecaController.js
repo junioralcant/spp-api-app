@@ -7,7 +7,8 @@ class PecaController {
   async index(req, res) {
     const userLogged = await User.findById(req.userId);
 
-    const {nomeLinha, dataIncio, dataFim, veiculo} = req.query;
+    const {nomeLinha, dataIncio, dataFim, veiculo, tipoPagamento} =
+      req.query;
 
     const filters = {};
 
@@ -43,6 +44,10 @@ class PecaController {
         filters.veiculo = new RegExp(veiculo, 'i');
       }
 
+      if (tipoPagamento) {
+        filters.tipoPagamento = new RegExp(tipoPagamento, 'i');
+      }
+
       let pecaFilter = await Peca.paginate(filters, {
         page: req.query.page || 1,
         limit: parseInt(req.query.limit_page) || 1000000,
@@ -75,6 +80,18 @@ class PecaController {
     } else if (veiculo) {
       peca = await Peca.find({
         veiculo: new RegExp(veiculo, 'i'),
+      })
+        .populate({
+          path: 'imagem',
+          select: ['_id', 'url'],
+        })
+        .populate({
+          path: 'userCreate',
+          select: ['_id', 'name', 'email'],
+        });
+    } else if (tipoPagamento) {
+      peca = await Peca.find({
+        tipoPagamento: new RegExp(tipoPagamento, 'i'),
       })
         .populate({
           path: 'imagem',
