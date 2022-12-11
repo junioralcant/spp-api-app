@@ -7,9 +7,13 @@ class AdiantamentoController {
   async index(req, res) {
     const userLogged = await User.findById(req.userId);
 
-    const {nomeLinha, dataIncio, dataFim, colaborador} = req.query;
-
-    console.log(dataFim, dataIncio);
+    const {
+      nomeLinha,
+      dataIncio,
+      dataFim,
+      colaborador,
+      tipoPagamento,
+    } = req.query;
 
     const filters = {};
 
@@ -34,8 +38,6 @@ class AdiantamentoController {
 
       const fim = moment(dataFim).format('YYYY-MM-DDT23:59:ss.SSSZ');
 
-      console.log(inicio, fim);
-
       filters.createdAt.$gte = inicio;
       filters.createdAt.$lte = fim;
 
@@ -45,6 +47,10 @@ class AdiantamentoController {
 
       if (colaborador) {
         filters.nomeColaborador = new RegExp(colaborador, 'i');
+      }
+
+      if (tipoPagamento) {
+        filters.tipoPagamento = new RegExp(tipoPagamento, 'i');
       }
 
       let adiantamentoFilter = await Adiantamento.paginate(filters, {
@@ -79,6 +85,18 @@ class AdiantamentoController {
     } else if (colaborador) {
       adiantamento = await Adiantamento.find({
         nomeColaborador: new RegExp(colaborador, 'i'),
+      })
+        .populate({
+          path: 'imagem',
+          select: ['_id', 'url'],
+        })
+        .populate({
+          path: 'userCreate',
+          select: ['_id', 'name', 'email'],
+        });
+    } else if (tipoPagamento) {
+      adiantamento = await Adiantamento.find({
+        tipoPagamento: new RegExp(tipoPagamento, 'i'),
       })
         .populate({
           path: 'imagem',
