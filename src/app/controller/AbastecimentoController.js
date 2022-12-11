@@ -6,7 +6,8 @@ const Image = require('../models/Image');
 
 class AbastecimentoController {
   async index(req, res) {
-    const {nomeLinha, dataIncio, dataFim, veiculo} = req.query;
+    const {nomeLinha, dataIncio, dataFim, veiculo, tipoPagamento} =
+      req.query;
 
     const userLogged = await User.findById(req.userId);
 
@@ -44,6 +45,10 @@ class AbastecimentoController {
         filters.veiculo = new RegExp(veiculo, 'i');
       }
 
+      if (tipoPagamento) {
+        filters.tipoPagamento = new RegExp(tipoPagamento, 'i');
+      }
+
       let abastecimentoFilter = await Abastecimento.paginate(
         filters,
         {
@@ -79,6 +84,18 @@ class AbastecimentoController {
     } else if (veiculo) {
       abastecimento = await Abastecimento.find({
         veiculo: new RegExp(veiculo, 'i'),
+      })
+        .populate({
+          path: 'imagem',
+          select: ['_id', 'url'],
+        })
+        .populate({
+          path: 'userCreate',
+          select: ['_id', 'name', 'email'],
+        });
+    } else if (tipoPagamento) {
+      abastecimento = await Abastecimento.find({
+        tipoPagamento: new RegExp(tipoPagamento, 'i'),
       })
         .populate({
           path: 'imagem',
