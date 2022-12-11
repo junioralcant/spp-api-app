@@ -7,7 +7,8 @@ class HospedagemController {
   async index(req, res) {
     const userLogged = await User.findById(req.userId);
 
-    const {nomeLinha, dataIncio, dataFim, nomeHotel} = req.query;
+    const {nomeLinha, dataIncio, dataFim, nomeHotel, tipoPagamento} =
+      req.query;
 
     const filters = {};
 
@@ -43,6 +44,10 @@ class HospedagemController {
         filters.nomeHotel = new RegExp(nomeHotel, 'i');
       }
 
+      if (tipoPagamento) {
+        filters.tipoPagamento = new RegExp(tipoPagamento, 'i');
+      }
+
       let hospedagemFilter = await Hospedagem.paginate(filters, {
         page: req.query.page || 1,
         limit: parseInt(req.query.limit_page) || 1000000,
@@ -75,6 +80,18 @@ class HospedagemController {
     } else if (nomeHotel) {
       hospedagem = await Hospedagem.find({
         nomeHotel: new RegExp(nomeHotel, 'i'),
+      })
+        .populate({
+          path: 'imagem',
+          select: ['_id', 'url'],
+        })
+        .populate({
+          path: 'userCreate',
+          select: ['_id', 'name', 'email'],
+        });
+    } else if (tipoPagamento) {
+      hospedagem = await Hospedagem.find({
+        tipoPagamento: new RegExp(tipoPagamento, 'i'),
       })
         .populate({
           path: 'imagem',
