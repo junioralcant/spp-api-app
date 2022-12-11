@@ -7,7 +7,8 @@ class DespesaExtraController {
   async index(req, res) {
     const userLogged = await User.findById(req.userId);
 
-    const {nomeLinha, dataIncio, dataFim, item} = req.query;
+    const {nomeLinha, dataIncio, dataFim, item, tipoPagamento} =
+      req.query;
 
     const filters = {};
 
@@ -43,6 +44,10 @@ class DespesaExtraController {
         filters.item = new RegExp(item, 'i');
       }
 
+      if (tipoPagamento) {
+        filters.tipoPagamento = new RegExp(tipoPagamento, 'i');
+      }
+
       let despesaExtraFilter = await DespesaExtra.paginate(filters, {
         page: req.query.page || 1,
         limit: parseInt(req.query.limit_page) || 1000000,
@@ -75,6 +80,18 @@ class DespesaExtraController {
     } else if (item) {
       despesaExtra = await DespesaExtra.find({
         item: new RegExp(item, 'i'),
+      })
+        .populate({
+          path: 'imagem',
+          select: ['_id', 'url'],
+        })
+        .populate({
+          path: 'userCreate',
+          select: ['_id', 'name', 'email'],
+        });
+    } else if (tipoPagamento) {
+      despesaExtra = await DespesaExtra.find({
+        tipoPagamento: new RegExp(tipoPagamento, 'i'),
       })
         .populate({
           path: 'imagem',
