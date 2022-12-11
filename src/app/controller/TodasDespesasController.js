@@ -12,7 +12,8 @@ class TodasDespesasController {
   async index(req, res) {
     const userLogged = await User.findById(req.userId);
 
-    const {nomeLinha, dataIncio, dataFim, title} = req.query;
+    const {nomeLinha, dataIncio, dataFim, title, tipoPagamento} =
+      req.query;
 
     let despesas = [];
 
@@ -112,6 +113,16 @@ class TodasDespesasController {
           }
         });
       }
+
+      if (tipoPagamento) {
+        despesas = despesas.filter((despesa) => {
+          if (despesa.tipoPagamento) {
+            return despesa.tipoPagamento.match(
+              new RegExp(tipoPagamento, 'i')
+            );
+          }
+        });
+      }
     } else {
       const inicio = moment(dataIncio).format(
         'YYYY-MM-DDT00:mm:ss.SSSZ'
@@ -146,6 +157,16 @@ class TodasDespesasController {
           }
         });
       }
+
+      if (tipoPagamento) {
+        despesas = despesas.filter((despesa) => {
+          if (despesa.tipoPagamento) {
+            return despesa.tipoPagamento.match(
+              new RegExp(tipoPagamento, 'i')
+            );
+          }
+        });
+      }
     }
 
     if (userLogged.role !== 'ROLE_ADMIN') {
@@ -157,8 +178,6 @@ class TodasDespesasController {
         }
       });
     }
-
-    console.log(despesas.length);
 
     return res.json(despesas);
   }
