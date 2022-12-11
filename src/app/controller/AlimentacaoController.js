@@ -7,7 +7,7 @@ class AlimentacaoController {
   async index(req, res) {
     const userLogged = await User.findById(req.userId);
 
-    const {nomeLinha, dataIncio, dataFim} = req.query;
+    const {nomeLinha, dataIncio, dataFim, tipoPagamento} = req.query;
 
     const filters = {};
 
@@ -34,7 +34,14 @@ class AlimentacaoController {
 
       filters.createdAt.$gte = inicio;
       filters.createdAt.$lte = fim;
-      filters.nomeLinha = new RegExp(nomeLinha, 'i');
+
+      if (nomeLinha) {
+        filters.nomeLinha = new RegExp(nomeLinha, 'i');
+      }
+
+      if (tipoPagamento) {
+        filters.tipoPagamento = new RegExp(tipoPagamento, 'i');
+      }
 
       let alimentacaoFilter = await Alimentacao.paginate(filters, {
         page: req.query.page || 1,
@@ -56,6 +63,18 @@ class AlimentacaoController {
     } else if (nomeLinha) {
       alimentacao = await Alimentacao.find({
         nomeLinha: new RegExp(nomeLinha, 'i'),
+      })
+        .populate({
+          path: 'imagem',
+          select: ['_id', 'url'],
+        })
+        .populate({
+          path: 'userCreate',
+          select: ['_id', 'name', 'email'],
+        });
+    } else if (tipoPagamento) {
+      alimentacao = await Alimentacao.find({
+        tipoPagamento: new RegExp(tipoPagamento, 'i'),
       })
         .populate({
           path: 'imagem',
