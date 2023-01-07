@@ -6,6 +6,10 @@ const SaldoSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   },
+  transfer: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Transferencia',
+  },
   descricao: {
     type: String,
   },

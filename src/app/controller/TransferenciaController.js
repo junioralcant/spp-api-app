@@ -104,12 +104,6 @@ class TransferenciaController {
     const userFrom = await User.findById(userLogged);
     const userTo = await User.findById(to);
 
-    await Saldo.create({
-      total,
-      descricao: `TRANFERÊNCIA DE ${userFrom.name}`,
-      userCreate: userTo._id,
-    });
-
     const transferencia = await Transferencia.create({
       userCreate: userFrom._id,
       to: userTo._id,
@@ -117,7 +111,24 @@ class TransferenciaController {
       nomeLinha,
     });
 
+    await Saldo.create({
+      total,
+      descricao: `TRANFERÊNCIA DE ${userFrom.name}`,
+      userCreate: userTo._id,
+      transfer: transferencia._id,
+    });
+
     return res.json(transferencia);
+  }
+
+  async delete(req, res) {
+    const transferencia = await Transferencia.findById(req.params.id);
+
+    const saldo = await Saldo.find({transfer: transferencia._id});
+    await Saldo.findByIdAndDelete(saldo[0]._id);
+    await transferencia.remove();
+
+    return res.json();
   }
 }
 

@@ -5,5 +5,9 @@ const transferencia = express.Router();
 
 transferencia.post('/transferencia', TransferenciaController.store);
 transferencia.get('/transferencia', TransferenciaController.index);
+transferencia.delete(
+  '/transferencia/:id',
+  TransferenciaController.delete
+);
 
 module.exports = transferencia;
