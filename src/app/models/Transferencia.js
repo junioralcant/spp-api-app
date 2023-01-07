@@ -10,6 +10,9 @@ const TransferenciaSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   },
+  nomeLinha: {
+    type: String,
+  },
   title: {
     type: String,
     default: 'Transferência',
