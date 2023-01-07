@@ -6,6 +6,7 @@ const Alimentacao = require('../models/Alimentacao');
 const DespesaExtra = require('../models/DespesaExtra');
 const Hospedagem = require('../models/Hospedagem');
 const Peca = require('../models/Peca');
+const Transferencia = require('../models/Transferencia');
 const User = require('../models/User');
 
 class TodasDespesasController {
@@ -77,13 +78,24 @@ class TodasDespesasController {
         select: ['_id', 'name', 'email'],
       });
 
+    let transferencia = await Transferencia.find()
+      .populate({
+        path: 'userCreate',
+        select: ['_id', 'name', 'email'],
+      })
+      .populate({
+        path: 'to',
+        select: ['_id', 'name', 'email'],
+      });
+
     despesas = despesas.concat(
       abastecimento,
       adiantamento,
       alimentacao,
       despesaExtra,
       hospedagem,
-      peca
+      peca,
+      transferencia
     );
 
     // Filtra por dados do mes e ano atual
