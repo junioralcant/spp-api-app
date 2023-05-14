@@ -104,15 +104,13 @@ class PecaController {
     }
 
     // Filtra por dados do mes e ano atual
-    // if (!dataIncio || !dataFim) {
-    //   peca = peca.filter(
-    //     (aliment) =>
-    //       moment(aliment.createdAt).month() ===
-    //         moment(Date.now()).month() &&
-    //       moment(aliment.createdAt).year() ===
-    //         moment(Date.now()).year()
-    //   );
-    // }
+    if (!dataIncio || !dataFim) {
+      peca = peca.filter(
+        (aliment) =>
+          moment(aliment.createdAt).year() ===
+          moment(Date.now()).year()
+      );
+    }
 
     if (userLogged.role !== 'ROLE_ADMIN') {
       peca = peca.filter((item) => {

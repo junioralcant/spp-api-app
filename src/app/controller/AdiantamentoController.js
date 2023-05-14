@@ -109,15 +109,13 @@ class AdiantamentoController {
     }
 
     // Filtra por dados do mes e ano atual
-    // if (!dataIncio || !dataFim) {
-    //   adiantamento = adiantamento.filter(
-    //     (aliment) =>
-    //       moment(aliment.createdAt).month() ===
-    //         moment(Date.now()).month() &&
-    //       moment(aliment.createdAt).year() ===
-    //         moment(Date.now()).year()
-    //   );
-    // }
+    if (!dataIncio || !dataFim) {
+      adiantamento = adiantamento.filter(
+        (aliment) =>
+          moment(aliment.createdAt).year() ===
+          moment(Date.now()).year()
+      );
+    }
 
     if (userLogged.role !== 'ROLE_ADMIN') {
       adiantamento = adiantamento.filter((item) => {

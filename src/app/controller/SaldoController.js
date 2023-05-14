@@ -6,7 +6,7 @@ class SaldoController {
   async index(req, res) {
     const userLogged = await User.findById(req.userId);
 
-    const { dataIncio, dataFim, allDatas, descricao } = req.query;
+    const {dataIncio, dataFim, allDatas, descricao} = req.query;
 
     const filters = {};
 
@@ -57,15 +57,13 @@ class SaldoController {
     }
 
     // Filtra por dados do mes e ano atual
-    // if ((!dataIncio || !dataFim) && !allDatas) {
-    //   saldo = saldo.filter(
-    //     (aliment) =>
-    //       moment(aliment.createdAt).month() ===
-    //         moment(Date.now()).month() &&
-    //       moment(aliment.createdAt).year() ===
-    //         moment(Date.now()).year()
-    //   );
-    // }
+    if ((!dataIncio || !dataFim) && !allDatas) {
+      saldo = saldo.filter(
+        (aliment) =>
+          moment(aliment.createdAt).year() ===
+          moment(Date.now()).year()
+      );
+    }
 
     if (userLogged.role !== 'ROLE_ADMIN') {
       saldo = saldo.filter((item) => {
@@ -82,7 +80,7 @@ class SaldoController {
   async store(req, resp) {
     const userLogged = await User.findById(req.userId);
 
-    const { total, descricao } = req.body;
+    const {total, descricao} = req.body;
 
     const saldo = await Saldo.create({
       total,
@@ -94,7 +92,7 @@ class SaldoController {
   }
 
   async update(req, res) {
-    const { id } = req.params;
+    const {id} = req.params;
     const saldo = await Saldo.findByIdAndUpdate(id, req.body, {
       new: true,
     });
