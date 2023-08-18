@@ -20,6 +20,7 @@ const transferencia = require('./Transferencia');
 const multerConfig = require('../config/multer');
 
 const middleware = require('../app/middleware/auth');
+const servico = require('./Servico');
 
 const routes = express.Router();
 
@@ -27,6 +28,7 @@ routes.post('/users', UserController.store);
 routes.post('/sessions', SessionContrller.store);
 
 routes.use(middleware);
+routes.get('/users', UserController.index);
 
 routes.post(
   '/imagens',
@@ -44,7 +46,8 @@ routes.use(
   roco,
   todasdespesas,
   saldo,
-  transferencia
+  transferencia,
+  servico
 );
 
 routes.get('/', (req, res) => {
